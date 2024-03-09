@@ -84,7 +84,7 @@ end
 %obtain differenced variables for error correction form
 twos = 2 * s;
 threes = 3 * s;
-mxf = mx * (nlag + 1);
+mxf = m * (nlag + 1);
 if (ir == 1)
     yd = diferm(y, 1);
     yd = yd(nlag:end, :);
