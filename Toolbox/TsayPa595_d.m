@@ -4,7 +4,7 @@
 clear
 data = load(fullfile('data', 'm-bnd.dat'));
 bnd = (data(:, 4:5));
-[nx, mx] = size(bnd)
+[nx, mx] = size(bnd);
 tdx = [1:nx] / 12 + 1954; %time index
 
 subplot(2, 1, 1)
@@ -318,7 +318,7 @@ prt = 0;
 
 %add information about the Kronecker indices
 %estimate the Kronecker indices for the differenced series
-maxorder = 8;
+maxorder = [];  %we fix the maximum order
 prt = 0;
 [order, kro, scm] = varmaxscmidn(yd, x, seas, maxorder, hr3, prt);
 disp(' ')
@@ -331,14 +331,14 @@ pause
 
 disp(' ')
 disp('estimate model in Echelon Form for the Differenced Series: ')
-disp('Kronecker Indices are [3 3]  eliminating some insignificant ')
+disp('Kronecker Indices are [1 1]  eliminating some insignificant ')
 disp('paramters')
 disp('press any key to continue')
 pause
 
 %estimate VARMA model in echelon form for the differenced series and
 %aliminate some nonsignificant parameters
-kro = [3, 3];
+kro = [1, 1];
 hr3 = 0;
 finv2 = 1;
 mstainv = 1;
@@ -365,7 +365,6 @@ phifk = strx.phisexct;
 thfk = strx.thetasexct;
 [nphi, mphi, prk] = size(phifk);
 
-
 %error correction matrices
 [Pik, Lambdak, alphak, betafpk, ferror] = mid2mecf(phifk, Drk, DAfk);
 disp(' ');
@@ -376,17 +375,17 @@ in.fid = 1;
 in.fmt = char('%12.4f');
 tit = 'Lambda';
 strt = 1;
-mprintar(Lambdak(:, :, 2:3), in, tit, strt);
+mprintar(Lambdak(:, :, 2), in, tit, strt);
 tit = 'Theta';
 strt = 1;
-mprintar(thfk(:, :, 2:4), in, tit, strt);
+mprintar(thfk(:, :, 2), in, tit, strt);
 disp('t-values of Phi and Theta matrices:')
 tit = 'tv-Phi';
 strt = 1;
-mprintar(strx.phitvexct(:, :, 2:4), in, tit, strt);
+mprintar(strx.phitvexct(:, :, 2), in, tit, strt);
 tit = 'tv-Theta';
 strt = 1;
-mprintar(strx.thetatvexct(:, :, 2:4), in, tit, strt);
+mprintar(strx.thetatvexct(:, :, 2), in, tit, strt);
 %reparameterize betap and alpha
 [nb, mb] = size(betafpk);
 alphak = alphak * betafpk(:, 1:nb);

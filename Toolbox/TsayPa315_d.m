@@ -177,7 +177,7 @@ disp('press any key to continue')
 pause
 
 %identify a VARMA(p,q) model for the series
-maxlag = 6;
+maxlag = -3;  %we fix the maximum order
 minlag = 0;
 prt = 0;
 x = [];
@@ -197,7 +197,7 @@ pause
 
 %estimate the Kronecker indices for the original series
 prt = 0;
-maxorder = 6;
+maxorder = -3; %we fix the maximum order
 hr3 = 0;
 [order, kro, scm] = varmaxscmidn(zt, x, seas, maxorder, hr3, prt);
 disp('estimated Kronecker Indices for the original series ')

@@ -92,7 +92,7 @@ end
 
 
 %initial parameters
-xv = str.beta3';
+xv = str.beta3'; 
 % xv0=xv;                             %initial value for penalization
 % xv0=.85*xv0;
 

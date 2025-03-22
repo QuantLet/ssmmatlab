@@ -28,7 +28,7 @@ if nargin ~= 3
     error('wrong # of arguments to mhanris3');
 end;
 
-[nobs, neqs] = size(y);
+[nobs, neqs] = size(y); 
 if ~isempty(x)
     [nobs2, nx] = size(x);
     if (nobs2 ~= nobs)
@@ -99,7 +99,6 @@ if (nx > 0)
 else
     xlag = [];
 end
-
 
 vgam = str.vgam; % the parameters for the constant are at the end of vgam
 bind = str.bind;

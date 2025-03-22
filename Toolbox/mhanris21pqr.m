@@ -82,16 +82,18 @@ if (nx > 0)
 else
     xlag = [];
 end
-vp1lm1 = y(nlag+1:end, 1:l-1);
-vplm1e = y(nlag+1:end, l+1:end);
-vp = [vp1lm1, vplm1e];
+%we form a linear combination of the variables that has minimum (p, q, r)
+%orders (scalar component). 
+% vp1lm1 = y(nlag+1:end, 1:l-1);
+% vplm1e = y(nlag+1:end, l+1:end); 
+% vp = [vp1lm1, vplm1e];
+vp = y(nlag+1:end, 1:l-1) - res(nlag+1:end, 1:l-1);
+
+
 
 % form x-matrix, constant is included
 X = [-vp, -ylag, reslag, xlag, ones(nobse, 1)];
-%We do not include contemporary variables in the regression because the
-%K.i. are invariant to the order of the variables. Thus, we can assume that
-%the present variable is the first one.
-% X=[-ylag reslag xlag ones(nobse,1)];
+
 
 yt = yy(nlag+1:end);
 [beta, tv] = btval([], [yt, X]); % regression

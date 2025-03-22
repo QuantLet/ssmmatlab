@@ -232,7 +232,7 @@ end
 str = restrcmodel(s, m, seas, ordersr, orderss);
 
 %estimate restricted model
-str = mhanris(y, x, seas, str, hr3, finv2, mstainv, nsig, tsig);
+str = mhanris(y, x, seas, str, hr3, finv2, mstainv, nsig, tsig); 
 
 s2 = s * s;
 if (hr3 == 0) && (finv2 == 1) %third step of the HR method

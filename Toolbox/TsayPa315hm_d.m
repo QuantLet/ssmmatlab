@@ -95,6 +95,8 @@ tsig = [1., 0.];
 mstainv = 0;
 hr3 = 0;
 finv2 = 1;
+xx = [];
+freq = 1;
 [strvr, ferror] = estvarmaxpqrPQR(dzt, xx, freq, [4, 0, 0], [0, 0, 0], hr3, finv2, ...
     mstainv, nsig, tsig);
 
@@ -134,7 +136,7 @@ disp('press any key to continue')
 pause
 
 %identify a VARMA(p,q) model for the series
-maxlag = 6;
+maxlag = -2; %we fix the maximum order
 minlag = 0;
 prt = 0;
 x = [];
@@ -155,7 +157,7 @@ pause
 
 %estimate the Kronecker indices for the series
 prt = 0;
-maxorder = 6;
+maxorder = [];
 hr3 = 0;
 [order, kro, scm] = varmaxscmidn(dzt, x, seas, maxorder, hr3, prt);
 disp('estimated Kronecker Indices for the original series ')
@@ -278,7 +280,7 @@ pause
 close all
 
 disp(' ')
-disp('estimate simplified VARMA(1,2) model using the Hannan-Rissanen method: ')
+disp('estimate simplified VARMA(2,1) model using the Hannan-Rissanen method: ')
 disp('press any key to continue')
 pause
 
@@ -289,7 +291,7 @@ finv2 = 0;
 nsig = [1, 0];
 tsig = [.8, 0];
 mstainv = 0;
-[strvr, ferror] = estvarmaxpqrPQR(dzt, xx, freq, [1, 2, 0], [0, 0, 0], hr3, finv2, ...
+[strvr, ferror] = estvarmaxpqrPQR(dzt, xx, freq, [2, 1, 0], [0, 0, 0], hr3, finv2, ...
     mstainv, nsig, tsig);
 
 
@@ -301,22 +303,22 @@ in.fid = 1;
 in.fmt = char('%12.4f');
 tit = 'phi';
 strt = 1;
-mprintar(strvr.phis(:, :, 2), in, tit, strt);
+mprintar(strvr.phis(:, :, 2:3), in, tit, strt);
 disp(' ')
 tit = 'th';
 strt = 1;
-mprintar(strvr.thetas(:, :, 2:3), in, tit, strt);
+mprintar(strvr.thetas(:, :, 2), in, tit, strt);
 disp(' ')
 tit = 'Constant';
 mprintar(strvr.mu', in, tit);
 disp(' ')
 tit = 'tv-phi';
 strt = 1;
-mprintar(strvr.phitv(:, :, 2), in, tit, strt);
+mprintar(strvr.phitv(:, :, 2:3), in, tit, strt);
 disp(' ')
 tit = 'tv-th';
 strt = 1;
-mprintar(strvr.thetatv(:, :, 2:3), in, tit, strt);
+mprintar(strvr.thetatv(:, :, 2), in, tit, strt);
 disp(' ')
 tit = 'tv-Constant';
 mprintar(strvr.mutv', in, tit);
@@ -344,11 +346,11 @@ in.fid = 1;
 in.fmt = char('%12.4f');
 tit = 'phi';
 strt = 1;
-mprintar(strc.phiscon(:, :, 2), in, tit, strt);
+mprintar(strc.phiscon(:, :, 2:3), in, tit, strt);
 disp(' ')
 tit = 'th';
 strt = 1;
-mprintar(strc.thetascon(:, :, 2:3), in, tit, strt);
+mprintar(strc.thetascon(:, :, 2), in, tit, strt);
 disp(' ')
 tit = 'Mean';
 mprintar(strc.muscon', in, tit);
@@ -360,11 +362,11 @@ disp(' ')
 disp('t-values: ')
 tit = 'tv-phi';
 strt = 1;
-mprintar(strc.phitvcon(:, :, 2), in, tit, strt);
+mprintar(strc.phitvcon(:, :, 2:3), in, tit, strt);
 disp(' ')
 tit = 'tv-th';
 strt = 1;
-mprintar(strc.thetatvcon(:, :, 2:3), in, tit, strt);
+mprintar(strc.thetatvcon(:, :, 2), in, tit, strt);
 disp(' ')
 tit = 'tv-Mean';
 mprintar(strc.mutvcon', in, tit);

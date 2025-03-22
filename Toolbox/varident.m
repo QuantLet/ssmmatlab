@@ -146,7 +146,7 @@ for i = minlag:maxlag
         %   lagsopt=i; first=0;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
-end;
+end
 lg = [lagsoptaic, lagsoptbic, lagsopt];
 if prt == 1
     fprintf(1, 'selected orders by AIC, BIC and LR  = %3d%3d%3d\n', lg);

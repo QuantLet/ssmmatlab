@@ -282,14 +282,14 @@ residv = [initres(1:maxlags, :); res]; % use all possible VARX residuals
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Second step of HR method:
-str = mhanris2(y, residv, x, str);
+str = mhanris2(y, residv, x, str); 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Nonsignificant parameter elimination in second step of HR method.
 % Put nsig=1 and choose tsig for insignificant t-value
 % nsig2=0; tsig2=.75;
 %parameter elimination after the second step of HR method
 if nsig2
-    [ct2, str] = nse2(y, residv, x, tsig2, str);
+    [ct2, str] = nse2(y, residv, x, tsig2, str); 
     str.ct2 = ct2;
 end
 if finv2 == 1
@@ -303,22 +303,20 @@ if finv2 == 1
     end
 end
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Third step of HR method: only if model is invertible and hr3 = 0
 if (str.noninv2 == 0) && (hr3 == 0)
     %  tic
-    str = mhanris3(y, x, str);
+    str = mhanris3(y, x, str);  
     %  toc
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Nonsignificant parameter elimination in second step of HR method.
+    % Nonsignificant parameter elimination in third step of HR method.
     % Put nsig=1 and choose tsig for insignificant t-value
-    %  nsig3=0; tsig3=1.;
     %parameter elimination after the third step of HR method
     if nsig3
         invert2 = 0;
-        [ct3, str] = nse3(y, x, tsig3, invert2, str);
-        str.ct3 = ct3;
+        [ct3, str] = nse3(y, x, tsig3, invert2, str); 
+        str.ct3 = ct3;  
     end
 else
     return

@@ -1,4 +1,4 @@
-%script file for example3.9 in Tsay (2014)
+%script file for example3.9 in Tsay (2014), p. 175.
 %
 
 y = load(fullfile('data', 'ushog.dat'));
@@ -23,9 +23,9 @@ disp('press any key to continue')
 pause
 
 %identify a VARMA(p,q,r) model for the series
-maxlag = 6;
+maxlag = [];
 minlag = 0;
-prt = 0;
+prt = 1;
 x = [];
 seas = 1;
 [lagsopt, ferror] = lratiopqr(y, x, seas, maxlag, minlag, prt);
@@ -44,10 +44,11 @@ pause
 
 %estimate the Kronecker indices for the original series
 prt = 0;
-maxorder = 6;
+maxorder = [];
 hr3 = 0;
 [order, kro, scm] = varmaxscmidn(y, x, seas, maxorder, hr3, prt);
 disp('estimated Kronecker Indices for the series ')
 disp('using function "varmaxscmidn":')
 disp(kro)
 disp('press any key to continue')
+pause

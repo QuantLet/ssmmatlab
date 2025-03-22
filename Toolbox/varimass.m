@@ -50,7 +50,7 @@ U = randn(mx, 1);
 [r, junk] = size(F);
 if ~isempty(Sigma)
     % Sigma=sparse(Sigma);
-    [rs, junk] = size(Sigma);
+    [rs, ~] = size(Sigma);
     [LSigma, p] = chol(Sigma);
     % LSigma=full(LSigma);
 else
@@ -58,7 +58,10 @@ else
     LSigma = [];
 end
 if p > 0
-    LSigma = [LSigma', zeros(rs, rs-p+1)];
+    LSigmat = zeros(rs);
+    LSigmat(1:p-1, 1:p-1) = LSigma';
+    LSigma = LSigmat;
+    % LSigma = [LSigma', zeros(rs, rs-p+1)];
 else
     LSigma = LSigma';
 end

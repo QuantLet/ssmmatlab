@@ -104,7 +104,7 @@ conf = conf + n + 1;
 while conv == 0
     iter = iter + 1;
     rs0 = ff' * ff;
-    flag = 0;
+    flag = 0; 
     while flag == 0
         if nu > 0, wk = [fjac; sqrt(nu) * eye(n)];
         else wk = fjac;

@@ -426,7 +426,7 @@ prt = 0;
 
 %add information about the Kronecker indices
 %estimate the Kronecker indices for the differenced series
-maxorder = 8;
+maxorder = [];  
 prt = 0;
 [order, kro, scm] = varmaxscmidn(yd, x, seas, maxorder, hr3, prt);
 disp(' ')
@@ -439,32 +439,28 @@ pause
 %identify a VARMA(p,q) model for the differenced series
 disp('identify a VARMA(p,q) model for the differenced series')
 disp(' ')
-maxlag = 3;
+maxlag = [];  
 minlag = 0;
 prt = 0;
 [lagsopt, ferror] = lratiopqr(yd, x, seas, maxlag, minlag, prt);
 disp('estimated orders in VARMA(p,q,r):')
-lagsopt
+disp(lagsopt)
 disp('press any key to continue')
 pause
 
 
 disp(' ')
 disp('estimate model in Echelon Form for the Differenced Series: ')
-disp('Kronecker Indices are [2 2 2 2]  eliminating some insignificant ')
-disp('paramters')
+disp('Kronecker Indices are [1 1 1 0] ')
 disp('press any key to continue')
 pause
 
-%estimate VARMA model in echelon form for the differenced series and
-%aliminate some nonsignificant parameters
-kro = [2, 2, 2, 2];
+%estimate VARMA model in echelon form for the differenced series 
+kro = [1, 1, 1, 0];
 hr3 = 0;
 finv2 = 1;
 mstainv = 1;
-nsig = [1, 0];
-tsig = [1., 1.];
-strv = estvarmaxkro(yd, x, seas, kro, hr3, finv2, mstainv, nsig, tsig);
+strv = estvarmaxkro(yd, x, seas, kro, hr3, finv2, mstainv);
 
 
 %add unit root information to the model structure
@@ -498,23 +494,23 @@ in.fmt = char('%12.4f');
 % mprint(Lambdak(:,:,2:3),in);
 tit = 'Lambda';
 strt = 1;
-mprintar(Lambdak(:, :, 2:3), in, tit, strt);
+mprintar(Lambdak(:, :, 2), in, tit, strt);
 % in.cnames = char(' Theta(1):',' ',' ',' ',' Theta(2):',' ',' ',' ');
 % mprint(thfk(:,:,2:3),in);
 tit = 'Theta';
 strt = 1;
-mprintar(thfk(:, :, 2:3), in, tit, strt);
+mprintar(thfk(:, :, 2), in, tit, strt);
 disp('t-values of Phi and Theta matrices:')
 % in.cnames = char(' tv-Phi(1):',' ',' ',' ',' tv-Phi(2):',' ',' ',' ');
 % mprint(strx.phitvexct(:,:,2:3),in);
 tit = 'tv-Phi';
 strt = 1;
-mprintar(strx.phitvexct(:, :, 2:3), in, tit, strt);
+mprintar(strx.phitvexct(:, :, 2), in, tit, strt);
 % in.cnames = char(' tv-Theta(1):',' ',' ',' ',' tv-Theta(2):',' ',' ',' ');
 % mprint(strx.thetatvexct(:,:,2:3),in);
 tit = 'tv-theta';
 strt = 1;
-mprintar(strx.thetatvexct(:, :, 2:3), in, tit, strt);
+mprintar(strx.thetatvexct(:, :, 2), in, tit, strt);
 %reparameterize betap and alpha
 [nb, mb] = size(betafpk);
 alphak = alphak * betafpk(:, 1:nb);

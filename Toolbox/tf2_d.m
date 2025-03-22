@@ -24,12 +24,12 @@ disp(' ')
 disp('estimate Kronecker indices for the differenced series')
 disp('press any key to continue')
 pause
-%estimate the Kronecker indices for the original series
+%estimate the Kronecker indices for the differenced series
 prt = 0;
-maxorder = 5;
+maxorder = [];
 hr3 = 0;
 [order, kro, scm] = varmaxscmidn(yd, xd, seas, maxorder, hr3, prt);
-disp('estimated Kronecker Indices for the original series ')
+disp('estimated Kronecker Indices for the differenced series ')
 disp('using function "varmaxscmidn":')
 disp(kro)
 disp('press any key to continue')

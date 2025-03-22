@@ -105,9 +105,11 @@ str.r = r;
 str.sgn = sgn;
 str.sgnt = sgnt;
 r0 = zeros(m);
-for j = 1:m
-    for k = 1:m
-        r0(j, k) = c0(j, k) / (stdv(j) * stdv(k));
+if (ic == 1)
+    for j = 1:m
+        for k = 1:m
+            r0(j, k) = c0(j, k) / (stdv(j) * stdv(k));
+        end
     end
 end
 str.r0 = r0;

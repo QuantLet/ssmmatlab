@@ -32,7 +32,7 @@ function [ct3, str] = nse3(y, x, tsig3, invert2, str)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ct3 = 0;
-nsig3 = 1;
+nsig3 = 1; 
 while nsig3
     [mp, minc, mint] = nselimhr3(y, x, str);
     if mint >= tsig3
@@ -57,7 +57,7 @@ while nsig3
             str.nparm = str.nparm - 1;
             ct3 = ct3 + 1;
         end
-        str = mhanris2(y, str.residv, x, str);
+        str = mhanris2(y, str.residv, x, str); 
         %invert model if we want to iterate
         ima = chkstainv(str.Fs-str.Ks*str.Hs);
         if (ima > 1) && invert2

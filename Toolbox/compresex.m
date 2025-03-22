@@ -76,7 +76,7 @@ if r > 0
     Yx1 = [rx1, repmat(eye(neqs), nobs, 1)]; % add elements to estimate a mean in the regression
     %  Yx1=rx1;  %no mean
     yfvec = vec(yf'); % put the observations in a vector
-    beta = Yx1 \ yfvec;
+    beta = Yx1 \ yfvec; 
     yfvec = yfvec - Yx1 * beta; %estimate intial conditions and subtract
     yx = reshape(yfvec, neqs, nobs);
     y = yx'; % transform from vector to matrix
@@ -97,6 +97,6 @@ stre.phis = phie;
 stre.thetas = thetae;
 stre.gammas = gammae;
 stre.sigmar2 = Sigma;
-stre = armaxe2sse(stre);
+stre = armaxe2sse(stre); 
 % Y=[];
 [resid, E, rSigmat] = sqrt_ckms(y(1:end, :), Y, stre, maxupdt, tol);

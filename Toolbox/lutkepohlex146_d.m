@@ -342,7 +342,7 @@ prt = 0;
 
 %add information about the Kronecker indices
 %estimate the Kronecker indices for the original series
-maxorder = 5;
+maxorder = -3;  %we fix the maximum order 
 hr3 = 0;
 prt = 0;
 [order, kro, scm] = varmaxscmidn(y, x, seas, maxorder, hr3, prt);
@@ -355,7 +355,7 @@ pause
 
 
 %estimate the Kronecker indices for the differenced series
-maxorder = 5;
+maxorder = -3;  %we fix the maximum order 
 [order, kro, scm] = varmaxscmidn(yd, x, seas, maxorder, hr3, prt);
 disp(' ')
 disp('estimated Kronecker Indices for the differenced series')
@@ -367,13 +367,13 @@ pause
 
 disp(' ')
 disp('estimate model in Echelon Form for the Differenced Series: ')
-disp('Kronecker Indices are [1 0 1 1]                   ')
+disp('Kronecker Indices are [1 0 0 1]                   ')
 disp('press any key to continue')
 pause
 
 %estimate VARMA model in echelon form for the differenced series and
 %aliminate some nonsignificant parameters
-kro = [1, 0, 1, 1];
+kro = [1, 0, 0, 1];
 hr3 = 0;
 finv2 = 1;
 mstainv = 1;

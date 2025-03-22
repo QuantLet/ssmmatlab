@@ -5,9 +5,10 @@ function [lagsopt, ferror] = lratiopqr(y, x, seas, maxlag, minlag, prt)
 %          sequential likelihood ratio tests are performed to obtain an
 %          optimal VARMAX(i,i,i), starting with i=minlag until i=maxlag.
 %          Finally, with the same estimated innovations of the long VARX
-%          model, sequential likelihood ratio tests are performed to obtain
-%          an optimal VARMAX(p,q,r), starting with p, q and r equal to
-%          maxlag or i+1 if i < maxlag down until p, q and r equal zero.
+%          model, sequential lr tests or bic computations are performed to
+%          obtain an optimal VARMAX(p,q,r), starting with p, q and r equal 
+%          to maxlag or i, depending on the user instructions, down until 
+%          p, q and r equal zero.
 %          All models are estimated using the same sample size: nobs -
 %          maxlag or nobs - i - 1.
 %---------------------------------------------------
@@ -16,9 +17,10 @@ function [lagsopt, ferror] = lratiopqr(y, x, seas, maxlag, minlag, prt)
 %           x    = matrix of input variables (nobs x nx)
 %                 (NOTE: constant vector automatically included)
 %         seas   = seasonality
-%           maxlag = the maximum lag length. If empty on entry, it is
-%                    calculated by the program as the order of the VARX
-%                    approximation.
+%           maxlag = the maximum lag length. If empty or positive on entry, 
+%                    it is calculated by the program as the order of a
+%                    VARMA(p,p,p) approximation.
+%                    If negative, it is fixed to -maxlag
 %           minlag = the minimum lag length
 %           prt = flag for printing
 %                    0 = no, 1 = yes
@@ -42,6 +44,7 @@ function [lagsopt, ferror] = lratiopqr(y, x, seas, maxlag, minlag, prt)
 
 lagsopt = [];
 ferror = 0;
+flagmxl = 0;
 
 if nargin ~= 6
     disp('wrong # of arguments to lratiopqrt');
@@ -49,7 +52,11 @@ if nargin ~= 6
     return
 end;
 
-if maxlag < minlag
+if (maxlag < 0)
+    maxlag = - maxlag;
+    flagmxl = 1;
+end
+if (maxlag < minlag)
     disp('maxlag < minlag in lratiopqrt');
     ferror = 2;
     return
@@ -67,13 +74,15 @@ else
     nx = 0;
 end
 
-
 %first identify a varmax(p,p,p)
 [lagsopt, a, ferror] = lratiopppt(y, x, seas, maxlag, minlag, prt);
+%flagmxl = 1 implies maxlag is fixed by the user
+if isempty(maxlag) && (flagmxl == 0)  
+    maxlag = lagsopt;
+end
 
-
-if (maxlag > lagsopt)
-    maxlag = lagsopt + 1;
+if (maxlag > lagsopt) && (flagmxl == 0)
+    maxlag = lagsopt;
 end
 
 %initial model orders
@@ -81,7 +90,8 @@ p = maxlag;
 q = maxlag;
 pflag = 1;
 qflag = 1;
-if (nx > 0), r = maxlag;
+if (nx > 0) 
+    r = maxlag;
     rflag = 1;
 else
     r = 0;

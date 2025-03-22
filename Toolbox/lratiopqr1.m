@@ -67,7 +67,8 @@ pflag = 1;
 qflag = 1;
 if (nx > 0), r = maxlag;
     rflag = 1;
-else r = 0;
+else 
+    r = 0;
     rflag = 0;
 end
 
@@ -85,6 +86,7 @@ while (flag == 1)
     end
     if (r == 0), rflag = 0;
     end
+   
     if (pflag == 1)
         maxordr1 = max([p, q, r]);
         clear str; %kro=repmat(maxordr1,1,neqs); str = matechelon(kro,neqs,nx);
@@ -117,10 +119,10 @@ while (flag == 1)
         epe2 = resid2' * resid2;
         %Reinsel's correction, p.107:
         %Y=X_1B_1 + X_2B_2 + e,
-        %X_1 is (T x r_1), X_2 is (T x r_2). H_0: B_2=0
+        %Y is (T x k), X_1 is (T x r_1), X_2 is (T x r_2). H_0: B_2=0
         %M=-[T - r_1 - (r_2 + k +1)/2]log(U).
         %   nbrofvar1=neqs*(p-1)+neqs*q+nx*(r+1)+1;
-        nbrofvar1 = neqs * (p - 1) + neqs * q + nx * (r + 1);
+        nbrofvar1 = l - 1 + neqs * (p - 1) + neqs * q + nx * (r + 1);
         nbrofvar2 = neqs;
         nobse = nobs - maxordr1;
         const = double(nobse-nbrofvar1-(nbrofvar2 + 1 + 1)/2);
@@ -145,8 +147,8 @@ while (flag == 1)
             pflag = 0;
         end
     end
-    if (qflag == 1)
-        maxordr1 = max([p, q, r]);
+     if (qflag == 1)
+        maxordr1 = max([p, q, r]); 
         clear str; %kro=repmat(maxordr1,1,neqs); str = matechelon(kro,neqs,nx);
         %   str = restrcmodel(str,neqs,nx,maxordr1,p,q,r);
         str = restrcmodel(neqs, nx, 1, [p, q, r], [0, 0, 0]);
@@ -178,7 +180,7 @@ while (flag == 1)
         epe2 = resid2' * resid2;
         %Reinsel's correction, p.107
         %   nbrofvar1=neqs*p+neqs*(q-1)+nx*(r+1)+1;
-        nbrofvar1 = neqs * p + neqs * (q - 1) + nx * (r + 1);
+        nbrofvar1 = l - 1 + neqs * p + neqs * (q - 1) + nx * (r + 1);
         nbrofvar2 = neqs;
         nobse = nobs - maxordr1;
         const = double(nobse-nbrofvar1-(nbrofvar2 + 1 + 1)/2);
@@ -235,7 +237,7 @@ while (flag == 1)
         epe2 = resid2' * resid2;
         %Reinsel's correction, p.107
         %   nbrofvar1=neqs*p+neqs*q+nx*r+1;
-        nbrofvar1 = neqs * p + neqs * q + nx * r;
+        nbrofvar1 = l - 1 + neqs * p + neqs * q + nx * r;
         nbrofvar2 = nx;
         nobse = nobs - maxordr1;
         const = double(nobse-nbrofvar1-(nbrofvar2 + 1 + 1)/2);

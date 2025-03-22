@@ -52,13 +52,14 @@ disp('estimate Kronecker indices for the series')
 disp('press any key to continue')
 pause
 %estimate the Kronecker indices for the original series
-prt = 0;
+prt = 1;
 seas = 1;
-maxorder = 2;
+maxorder = -2; %we fix the maximum order to two
 hr3 = 0;
 [order, kro, scm] = varmaxscmidn(zt, xt, seas, maxorder, hr3, prt);
 disp('estimated Kronecker Indices for the original series ')
 disp('using function "varmaxscmidn":')
+disp(scm)
 disp(kro)
 disp('press any key to continue')
 pause
@@ -68,7 +69,7 @@ disp('press any key to continue')
 pause
 
 
-%estimate model using HR method (K.i. = [2 2]) and eliminate some
+%estimate model using HR method (K.i. = [2 1]) and eliminate some
 %nonsignificant parameters
 hr3 = 0;
 finv2 = 1;

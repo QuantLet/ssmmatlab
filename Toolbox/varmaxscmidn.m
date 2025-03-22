@@ -20,11 +20,11 @@ function [order, kro, scm] = varmaxscmidn(y, x, seas, maxorder, hr3, prt)
 %           x      = matrix of input variables (nobs x nx)
 %                   (NOTE: constant vector automatically included)
 %        seas      = seasonality
-%    maxorder      = empty, use the order of a VARX approximation as
-%                    maximum order for the VARMAX(p,q,r) model to be
-%                    identified.
-%                    >0, this maximum order is used as the maximum order
-%                    for the VARMAX(p,q,r) model to be identified.
+%    maxorder      = empty, the programm will compute the maximum order for 
+%                    the VARMAX(p,q,r) model to be identified.
+%                    >0, this maximum order is used as the initial maximum
+%                    order for the VARMAX(p,q,r) model to be identified.
+%                    <0, the maximum order is fixed to -maxlag
 %         hr3      = 1 perform only the first two stages of the HR method
 %                    0 perform the three stages of the HR method
 %         prt      = 1 print results of the VARX and VARMAX(p,p,p) tests
@@ -72,7 +72,7 @@ end
 %identify a VARMAX(p,q,r) model
 minorder = 0;
 [lagsopt, ferror] = lratiopqr(y, x, seas, maxorder, minorder, prt);
-p = max(lagsopt);
+p = max(lagsopt); 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -84,7 +84,7 @@ else
     str = estvarmaxpqrPQR(y, x, seas, lagsopt, [0, 0, 0], hr3);
 end
 residv = str.residv; %first residuals obtained with VARX
-% residv=zeros(size(residv));   %first residuals equal zero
+residv = zeros(size(residv));   %first residuals equal zero
 if hr3 == 0
     resid = str.resid3;
 else

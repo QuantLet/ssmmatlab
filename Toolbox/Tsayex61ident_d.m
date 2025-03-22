@@ -79,7 +79,7 @@ qs = 1;
 
 
 %identify a VARMA(p,q) model (regular part) for the residual series
-maxlag = 6;
+maxlag = 4;
 minlag = 0;
 prt = 1;
 x = [];

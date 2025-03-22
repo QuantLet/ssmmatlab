@@ -1,5 +1,5 @@
-function lagsopt = infcr(y, maxlag, minlag, crt, prt, x)
-% PURPOSE: to determine VAR optimal lag length using information criteria
+function [lagsopt, initres] = infcr(y, maxlag, minlag, crt, prt, x)
+% PURPOSE: to determine VARX optimal lag length using information criteria
 %---------------------------------------------------
 % USAGE:  lagsopt = infcr(y,maxlag,minlag,crt,prt,x)
 % where:    y    = an (nobs x nvar) matrix of y-vectors
@@ -10,10 +10,13 @@ function lagsopt = infcr(y, maxlag, minlag, crt, prt, x)
 %           prt = flag for printing
 %                    0 = no, 1 = yes
 %                    (default = 0)
-%           x    = optional matrix of variables (nobs x nx)
+%           x    = matrix of input variables (nobs x nx)
 %                 (NOTE: constant vector automatically included)
 %---------------------------------------------------
 % RETURNS: lagsopt, the optimum number of lags
+%          initres = an (maxlag x neqs) matrix of initial residuals
+%                    corresponding to the estimated VARXs of order 1,2,...,
+%                    maxlag.
 %---------------------------------------------------
 %
 % Copyright (c) 21 July 2003 by Victor Gomez
@@ -42,16 +45,27 @@ elseif nargin == 3
     prt = 0;
     xflag = 0;
     crt = 'aic';
-end;
+end
 if ~strcmp(crt, 'aic') && ~strcmp(crt, 'bic')
     error('wrong crt to infcr');
 end
 
 if maxlag < minlag
     error('maxlag < minlag in infcr');
-end;
+end
 
 [nobs, nvar] = size(y);
+if (xflag ==1)
+    [mx, nx] = size(x);
+    if (mx ~= nobs)
+       error('nobs nonequal to mx in infcr')
+    end
+else
+    nx = 0;
+end
+
+
+initresa = zeros(maxlag+1, nvar);
 dn = double(nobs-maxlag); %we condition on the first maxlag observations
 
 
@@ -59,15 +73,15 @@ dn = double(nobs-maxlag); %we condition on the first maxlag observations
 lagsopt = 0;
 critm = 1.d10;
 for lags = minlag:maxlag
-    if xflag == 1 % case of deterministic variables
-        resid = var_res(y(maxlag-lags+1:end, :), lags, x(maxlag-lags+1:end, :));
-    else % case of no deterministic variables
-        resid = var_res(y(maxlag-lags+1:end, :), lags);
-    end;
+    if (xflag == 1)
+       resid = varx_res(y(maxlag-lags+1:end, :), lags, x(maxlag-lags+1:end, :));
+    else
+       resid = var_res(y(maxlag-lags+1:end, :), lags);
+    end
     % first get var-cov matrices for residuals
     sigmar = cov(resid, 1);
     cra = log(det(sigmar));
-    dnparbn = double(lags*nvar^2) / dn;
+    dnparbn = double(lags*nvar^2 + lags*nvar*nx + nvar*nx) / dn;
     if strcmp(crt, 'aic')
         pent = 2;
     else
@@ -81,4 +95,21 @@ for lags = minlag:maxlag
         critm = crit;
         lagsopt = lags;
     end
-end;
+end
+if (xflag == 1)
+   resid1 = varx_res(y, 0, x);
+else
+   resid1 = var_res(y, 0);
+end
+initresa(1, :) = resid1(1, :);
+initres = initresa(1:maxlag, :);
+if nargout == 2
+    for i = 1:maxlag
+        if (xflag == 1)
+           resid = varx_res(y, i, x);
+        else
+           resid = var_res(y, i);
+        end
+        initres(i, :) = resid(1, :);
+    end
+end

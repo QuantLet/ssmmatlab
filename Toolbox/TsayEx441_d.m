@@ -48,7 +48,7 @@ pause
 
 
 %identify a VARMA(p,q) model for the series
-maxlag = 6;
+maxlag = [];
 minlag = 0;
 prt = 0;
 [lagsopt, ferror] = lratiopqr(y, x, seas, maxlag, minlag, prt);
@@ -77,12 +77,12 @@ pause
 
 
 %estimate the Kronecker indices for the series
-maxorder = 6;
+maxorder = [];
 hr3 = 0;
 prt = 0;
 [order, kro, scm] = varmaxscmidn(y, x, seas, maxorder, hr3, prt);
 disp('estimated Kronecker Indices for the original series ')
-disp('using function "varmaxscmidnt":')
+disp('using function "varmaxscmidn":')
 disp(kro)
 disp('press any key to continue')
 pause

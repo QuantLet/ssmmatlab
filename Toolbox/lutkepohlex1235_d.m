@@ -45,9 +45,9 @@ pause
 
 
 %identify a VARMA(p,q) model for the series
-maxlag = 6;
+maxlag = [];   
 minlag = 0;
-prt = 0;
+prt = 1;
 [lagsopt, ferror] = lratiopqr(y, x, seas, maxlag, minlag, prt);
 disp(' ')
 disp('Estimated orders in VARMAX(p,q,r):  ')
@@ -64,8 +64,8 @@ pause
 
 
 %estimate the Kronecker indices for the series
-prt = 0;
-maxorder = 6;
+prt = 1;
+maxorder = [];   
 hr3 = 0;
 [order, kro, scm] = varmaxscmidn(y, x, seas, maxorder, hr3, prt);
 disp(' ')
@@ -77,13 +77,13 @@ pause
 
 disp(' ')
 disp('estimation using the Hannan-Rissanen method')
-disp('Kronecker indices are [0 2]')
+disp('Kronecker indices are [0 1]')
 disp('press any key to continue')
 pause
 
 
-%estimate model using HR method (K.i. = [0 2])
-kro = [0, 2];
+%estimate model using HR method (K.i. = [0 1])
+kro = [0, 1];
 hr3 = 0;
 finv2 = 1;
 strv = estvarmaxkro(y, x, seas, kro, hr3, finv2);
@@ -127,7 +127,7 @@ pause
 
 disp(' ')
 disp('estimation using the conditional method')
-disp('Kronecker indices are [0 2]')
+disp('Kronecker indices are [0 1]')
 disp('press any key to continue')
 pause
 
@@ -172,7 +172,7 @@ pause
 
 disp(' ')
 disp('estimation using the exact method')
-disp('Kronecker indices are [0 2]')
+disp('Kronecker indices are [0 1]')
 disp('press any key to continue')
 pause
 

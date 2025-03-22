@@ -36,11 +36,11 @@ function [lagsopt, initres] = lratiocrax(y, maxlag, minlag, incr, prt, a, x)
 
 if nargin ~= 7
     error('wrong # of arguments to lratiocrax');
-end;
+end
 
 if maxlag < minlag
     error('maxlag < minlag in lratiocrax');
-end;
+end
 
 
 [nobs, neqs] = size(y);
@@ -54,10 +54,31 @@ initresa = zeros(maxlag+1, neqs);
 
 % loop over lag lengths and do likelihood ratio tests
 % the sample size is in all cases nobs - maxlag (Tsay, 2014, p. 62)
-lagsopt = maxlag;
+lagsoptlr = maxlag;
 first = 1;
-if minlag == 0, minlag = 1;
+if  (minlag == 0)
+    minlag = 1;
 end
+
+% BIC 
+% start with zero lags
+lagsoptbic = 0;
+dn = double(nobs-maxlag); %we condition on the first maxlag observations
+pentbic = log(dn);
+resid1 = y(maxlag+1:end, :); 
+sigmar1 = resid1' * resid1 / dn;
+cra = log(det(sigmar1));
+critbicm = cra;
+lratio = 0.;
+lprob = 1.;
+if prt == 1
+    fprintf(1, '                  BIC              LR              p-val\n');
+    out = [0, critbicm, lratio, 1 - lprob];
+    fprintf(1, 'nlag = %2d%16.4f%16.4f%16.4f \n', out);
+end
+
+
+
 % for i=maxlag:-incr:minlag
 for i = minlag:incr:maxlag
     % adjust nobs to feed the lags
@@ -66,13 +87,13 @@ for i = minlag:incr:maxlag
     %  resid2 = var_resax(y(2:end,:),i-1,a(2:end,:),x(2:end,:)); % restricted model
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %
-    %  i
+    % i
     imincr = i - incr;
     if (imincr < 0)
         break
     end
     r1 = imincr;
-    r2 = incr;
+    r2 = incr;   
     clear str;
     kro = repmat(i, 1, neqs);
     str = matechelon(kro, neqs, nx);
@@ -103,7 +124,8 @@ for i = minlag:incr:maxlag
     %  nbrofvar2=nbrofvar*r2+nx*incr;
     %  const = double(nobse-nbrofvar1-(nbrofvar2+neqs+1)/2);
     nbrofvar = neqs + neqs + nx;
-    nbrofvar1 = nx + nbrofvar * r1;
+    nbrofvar1 = nx + nbrofvar * r1; 
+    %the extra nx above is to account for the zero lag in inputs
     nbrofvar2 = nbrofvar * r2;
     const = double(nobs-maxlag-nbrofvar1-(nbrofvar2 + neqs + 1)/2);
     lratio = const * (log(det(epe2)) - log(det(epe1)));
@@ -115,22 +137,49 @@ for i = minlag:incr:maxlag
     else
         lprob = 1;
     end
-    if prt == 1
-        out = [i, imincr, lratio, 1 - lprob];
-        fprintf(1, 'nlag = %2d %2d, LR statistic = %16.4f, probability = %6.4g \n', out);
-    end
+    % if prt == 1
+    %     out = [i, imincr, lratio, 1 - lprob];
+    %     fprintf(1, 'nlag = %2d %2d, LR statistic = %16.4f, probability = %6.4g \n', out);
+    % end
     if (1 - lprob > 0.05) && (first == 1) % low p-values reject the null hypothesis that the i-th lag coefficient is zero
-        lagsopt = i - 1;
-        first = 0;
+        lagsoptlr = i - 1;
+        first = 0; 
         %  if (1-lprob < 0.05) && (first == 1) % low p-values reject the null hypothesis
         %   % we reject the null hypothesis that the i-th lag coefficient is zero
         % %   if (noninv1 == 0) & (noninv2 == 0)
         %    lagsopt=i; first=0;
         %   end
     end
-end;
-if (first == 1)
-    lagsopt = minlag;
+
+
+    %compute BIC information criteria
+    sigmar1 = epe1 / dn;
+    cra = log(det(sigmar1));
+    dnparbn = double(i*(neqs^2 + neqs^2) + i*neqs*nx + neqs*nx) / dn;
+    critbic = cra + dnparbn * pentbic;
+    if critbic < critbicm
+        critbicm = critbic;
+        lagsoptbic = i;
+    end
+    if prt == 1
+        out = [i, critbic, lratio, 1 - lprob];
+        fprintf(1, 'nlag = %2d%16.4f%16.4f%16.4f \n', out);
+    end
+
+end
+%use the bic to decide
+lagsopt = lagsoptbic;
+if (lagsopt == 0)
+    lagsopt = 1;
+end
+%use lr to decide
+% lagsopt = lagsoptlr;
+% % if (first == 1)
+% %     lagsopt = minlag;
+% % end
+if prt == 1
+    out = [lagsoptbic, lagsoptlr];
+    fprintf(1, 'selected orders by BIC and LR  = %3d%3d\n', out);
 end
 % resid1 = var_resax(y,0,a,x); initresa(1,:)=resid1(1,:);
 initres = initresa(1:maxlag, :);

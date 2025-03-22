@@ -1,0 +1,337 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Example  6.2  in Tsay (2014), pp. 346-352
+%
+%Series are:  1) monthly U.S. regular conventional gas price z1t and
+% 2)  heating oil price z2t of New York Harbor. Both series are measured in dollars
+% per gallon. These prices depend on the crude oil and natural gas prices;  3) x1t
+% the spot oil price of West Texas Intermediate, dollars per barrel, and  4) x2t the
+% natural gas price of Henry Hub, LA, measured in dollars per million BTU. Thus,
+% yt =(z1t, z2t), xt = (x1t, x2t), and k = m = 2. The sample period is from
+% November 1993 to August 2012.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+clear;
+
+da = load(fullfile('data', 'm-gasoil.dat'));
+yt = da(:, 3:6);
+tdx = da(:, 1) + da(:, 2) / 12;
+
+
+subplot(2, 2, 1)
+plot(tdx, yt(:, 1))
+xlabel('time');
+ylabel('Greg');
+axis('tight');
+subplot(2, 2, 2)
+plot(tdx, yt(:, 3))
+xlabel('time');
+ylabel('oilp');
+axis('tight');
+subplot(2, 2, 3)
+plot(tdx, yt(:, 2))
+xlabel('time');
+ylabel('hoil');
+axis('tight');
+subplot(2, 2, 4)
+plot(tdx, yt(:, 4))
+xlabel('time');
+ylabel('gasp');
+axis('tight');
+disp('press any key to continue')
+pause
+close all
+
+zt = yt(:, 1:2);
+xt = yt(:, 3:4);
+
+%VAR order identification for zt
+prt = 1;
+minlag = 0;
+maxlag = 13;
+lagsopt = varident(zt, maxlag, minlag, prt);
+disp(' ')
+disp('Estimated orders in VAR for first two variables using AIC BIC LR:  ')
+disp(lagsopt)
+pause
+
+
+%identify a VARX model for the series
+maxlag = 11;
+minlag = 0;
+prt = 0;
+[lagsopt, initres] = lratiocrx(zt, maxlag, minlag, prt, xt);
+disp(' ')
+disp('Estimated orders in VARX using LR:  ')
+disp(lagsopt)
+disp('press any key to continue')
+pause
+
+crt = 'bic';
+lagsopt = infcr(zt, maxlag, minlag, crt, prt, xt);
+disp(' ')
+disp('Estimated orders in VARX using BIC:  ')
+disp(lagsopt)
+disp('press any key to continue')
+pause
+
+[lagsopt, ferror] = lratiopqr(zt, xt, seas, maxorder, minorder, prt);
+
+%estimate a VARMAX(2,0,1) model
+freq = 1;
+hr3 = 0;
+finv2 = 1;
+[strv, ferror] = estvarmaxpqrPQR(zt, xt, freq, [2, 0, 1], [0, 0, 0], hr3, finv2);
+disp('press any key to continue')
+pause
+
+
+%estimate a simplified VARMAX(2,0,1) model
+mstainv = 1;
+nsig = [1, 0];
+tsig = [1., 1.];
+[strvr, ferror] = estvarmaxpqrPQR(zt, xt, freq, [2, 0, 1], [0, 0, 0], ...
+    hr3, finv2, mstainv, nsig, tsig);
+
+disp(' ');
+disp('***** Estimated VARMAX Model  *****');
+disp(' ');
+clear in
+in.fid = 1;
+in.fmt = char('%12.4f');
+tit = 'AR';
+strt = 1;
+mprintar(strvr.phis3(:, :, 2:3), in, tit, strt);
+disp(' ')
+tit = 'X part';
+strt = 0;
+mprintar(strvr.gammas3(:, :, 1:2), in, tit, strt);
+disp(' ')
+tit = 'Constant';
+mprintar(strvr.mus3', in, tit);
+disp(' ')
+tit = 'tv-AR';
+strt = 1;
+mprintar(strvr.phitv3(:, :, 2:3), in, tit, strt);
+disp(' ')
+tit = 'tv-X part';
+strt = 0;
+mprintar(strvr.gammatv3(:, :, 1:2), in, tit, strt);
+disp(' ')
+tit = 'tv-Constant';
+mprintar(strvr.mutv3', in, tit);
+disp(' ')
+tit = 'Sigma';
+mprintar(strvr.sigmar3, in, tit);
+disp('press any key to continue')
+pause
+
+
+%compute autocovariance and autocorrelation matrices of residuals
+lag = 24;
+ic = 1;
+nr = 0; %nr=strx.nparm;
+disp(' ')
+disp('******** Residuals:     ********');
+str = mautcov(strv.resid3, lag, ic, nr);
+disp('Correlation matrix at lag 0:')
+disp(str.r0)
+disp('Q statistics:')
+disp(str.qstat)
+
+disp('p-values of Q statistics:')
+disp(str.pval)
+[m, n] = size(str.pval);
+t = 1:m;
+plot(t, str.pval, t, 0.05*ones(1, m))
+legend('p-values of Q statistics:')
+pause
+close all
+
+
+%identify a VARMA(p,q,r) model for the series
+disp('identify a VARMAX(p,q,r) model')
+pause
+maxlag = -3;     %we fix the maximum order
+minlag = 0;
+prt = 0;
+seas = 1;
+[lagsopt, ferror] = lratiopqr(zt, xt, seas, maxlag, minlag, prt);
+disp(' ')
+disp('Estimated orders in VARMAX(p,q,r):  ')
+disp(lagsopt)
+disp('press any key to continue')
+pause
+
+disp('estimate a simplified VARMAX(1,4,3) model using the HR method')
+pause
+%estimate a simplified VARMAX(1,4,3) model
+mstainv = 1;
+nsig = [1, 0];
+tsig = [1., 1.];
+[strvs, ferror] = estvarmaxpqrPQR(zt, xt, freq, [1, 4, 3], [0, 0, 0], hr3, finv2, mstainv, nsig, tsig);
+
+disp(' ');
+disp('***** Estimated VARMAX Model  *****');
+disp(' ');
+clear in
+in.fid = 1;
+in.fmt = char('%12.4f');
+tit = 'AR';
+strt = 1;
+mprintar(strvs.phis3(:, :, 2), in, tit, strt);
+disp(' ')
+tit = 'MA';
+strt = 1;
+mprintar(strvs.thetas3(:, :, 2:5), in, tit, strt);
+disp(' ')
+tit = 'X part';
+strt = 0;
+mprintar(strvs.gammas3(:, :, 1:4), in, tit, strt);
+disp(' ')
+tit = 'Constant';
+mprintar(strvs.mus3', in, tit);
+disp(' ')
+tit = 'tv-AR';
+strt = 1;
+mprintar(strvs.phitv3(:, :, 2), in, tit, strt);
+disp(' ')
+tit = 'tv-MA';
+strt = 1;
+mprintar(strvs.thetatv3(:, :, 2:5), in, tit, strt);
+disp(' ')
+tit = 'tv-X part';
+strt = 0;
+mprintar(strvs.gammatv3(:, :, 1:4), in, tit, strt);
+disp(' ')
+tit = 'tv-Constant';
+mprintar(strvs.mutv3', in, tit);
+disp(' ')
+tit = 'Sigma';
+mprintar(strvs.sigmar3, in, tit);
+disp('press any key to continue')
+pause
+
+
+%compute autocovariance and autocorrelation matrices of  residuals
+lag = 24;
+ic = 1;
+nr = 0; %nr=strx.nparm;
+disp(' ')
+disp('******** Residuals:     ********');
+str = mautcov(strvs.resid3, lag, ic, nr);
+disp('Correlation matrix at lag 0:')
+disp(str.r0)
+disp('Q statistics:')
+disp(str.qstat)
+
+disp('p-values of Q statistics:')
+disp(str.pval)
+[m, n] = size(str.pval);
+t = 1:m;
+plot(t, str.pval, t, 0.05*ones(1, m))
+legend('p-values of Q statistics:')
+pause
+close all
+
+disp(' ')
+disp('estimate using the conditional method')
+disp('press any key to continue')
+pause
+
+%estimate using the conditional method
+[xvfc, strc, ferrorc] = mconestim(zt, xt, strvs);
+
+disp(' ');
+disp('***** Estimated Model using the conditional method  *****');
+disp(' ');
+clear in
+in.fid = 1;
+in.fmt = char('%12.4f');
+tit = 'phi';
+strt = 1;
+mprintar(strc.phiscon(:, :, 2), in, tit, strt);
+disp(' ')
+tit = 'th';
+strt = 1;
+mprintar(strc.thetascon(:, :, 2:5), in, tit, strt);
+disp(' ')
+tit = 'X-part';
+strt = 0;
+mprintar(strc.gammascon(:, :, 1:4), in, tit, strt);
+disp(' ')
+tit = 'Mean';
+mprintar(strc.muscon', in, tit);
+disp(' ')
+tit = 'Sigma';
+mprintar(strc.sigmarcon, in, tit);
+disp(' ')
+disp(' ')
+disp('t-values: ')
+tit = 'tv-phi';
+strt = 1;
+mprintar(strc.phitvcon(:, :, 2), in, tit, strt);
+disp(' ')
+tit = 'tv-th';
+strt = 1;
+mprintar(strc.thetatvcon(:, :, 2:5), in, tit, strt);
+disp(' ')
+tit = 'tv-X-part';
+strt = 0;
+mprintar(strc.gammatvcon(:, :, 1:4), in, tit, strt);
+disp(' ');
+tit = 'tv-Mean';
+mprintar(strc.mutvcon', in, tit);
+disp(' ')
+disp('press any key to continue')
+pause
+
+disp(' ')
+disp('estimate using the exact method')
+disp('press any key to continue')
+pause
+
+%estimate model using the exact method
+Y = eye(2);
+[xvfx, strx, ferror] = mexactestimc(zt, xt, strc, Y);
+
+disp(' ');
+disp('***** Estimated Model using the exact method  *****');
+disp(' ');
+clear in
+in.fid = 1;
+in.fmt = char('%12.4f');
+tit = 'phi';
+strt = 1;
+mprintar(strx.phisexct(:, :, 2), in, tit, strt);
+disp(' ')
+tit = 'th';
+strt = 1;
+mprintar(strx.thetasexct(:, :, 2:5), in, tit, strt);
+disp(' ')
+tit = 'X-part';
+strt = 0;
+mprintar(strx.gammasexct(:, :, 1:4), in, tit, strt);
+disp(' ')
+tit = 'Mean';
+mprintar(strx.musexct', in, tit);
+disp(' ')
+tit = 'Sigma';
+mprintar(strx.sigmarexct, in, tit);
+disp(' ')
+disp(' ')
+disp('t-values: ')
+tit = 'tv-phi';
+strt = 1;
+mprintar(strx.phitvexct(:, :, 2), in, tit, strt);
+disp(' ')
+tit = 'tv-th';
+strt = 1;
+mprintar(strx.thetatvexct(:, :, 2:5), in, tit, strt);
+disp(' ')
+tit = 'tv-X-part';
+strt = 0;
+mprintar(strx.gammatvexct(:, :, 1:4), in, tit, strt);
+disp(' ');
+tit = 'tv-Mean';
+mprintar(strx.mutvexct', in, tit);

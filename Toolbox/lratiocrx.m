@@ -92,10 +92,10 @@ for i = minlag:maxlag
         %   % we reject the null hypothesis that the i-th lag coefficient is zero
         %   lagsopt=i; first=0;
     end
-end;
-if (first == 1)
-    lagsopt = minlag;
 end
+% if (first == 1)
+%     lagsopt = minlag;
+% end
 resid1 = varx_res(y, 0, x);
 initresa(1, :) = resid1(1, :);
 initres = initresa(1:maxlag, :);

@@ -101,7 +101,7 @@ strt = 0;
 mprintar(strv.gammatv(:, :, 1), in, tit, strt);
 
 %estimate the Kronecker indices for the series
-maxorder = 8;
+maxorder = 3;
 prt = 0;
 seas = 1;
 hr3 = 0;

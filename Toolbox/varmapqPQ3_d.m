@@ -55,7 +55,9 @@ yd=diferm(y,dr);
 
 
 %estimate the Kronecker indices for the differenced series
-maxorder=2; hr3=0; prt=0;
+maxorder = []; 
+hr3 = 0; 
+prt = 0;
 [order,kro,scm] = varmaxscmidn(yd,x,seas,maxorder,hr3,prt);
 disp('estimated Kronecker Indices for the differenced series ')
 disp('using function "varmaxscmidnt":')
@@ -66,7 +68,7 @@ pause
 disp('estimate model in Echelon Form for the differenced series ')
 disp('using the Hannan-Rissanen method and eliminate some ')
 disp('insignificant paramters')                         
-disp('Kronecker Indices are [1 0 0].                            ')
+disp('We change the Kronecker Indices to [1 0 0].               ')
 disp('press any key to continue')
 pause
 

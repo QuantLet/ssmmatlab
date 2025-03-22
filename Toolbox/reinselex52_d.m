@@ -102,7 +102,7 @@ pause
 close all
 
 %identify a VARMA(p,q) model for the series
-maxlag = 6;
+maxlag = 5;
 minlag = 0;
 prt = 0;
 x = [];
@@ -363,7 +363,7 @@ close all
 
 
 %identify a VARMA(p,q) model for the series
-maxlag = 6;
+maxlag = 3;
 minlag = 0;
 prt = 0;
 x = [];

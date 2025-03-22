@@ -45,11 +45,14 @@ close all
 zt = yt(:, 1:2);
 xt = yt(:, 3:4);
 
-%VAR order identification
+%VAR order identification for zt
 prt = 1;
 minlag = 0;
 maxlag = 13;
 lagsopt = varident(zt, maxlag, minlag, prt);
+disp(' ')
+disp('Estimated orders in VAR for first two variables using AIC BIC LR:  ')
+disp(lagsopt)
 pause
 
 
@@ -57,7 +60,6 @@ pause
 maxlag = 11;
 minlag = 0;
 prt = 0;
-seas = 1;
 [lagsopt, initres] = lratiocrx(zt, maxlag, minlag, prt, xt);
 disp(' ')
 disp('Estimated orders in VARX using LR:  ')
@@ -70,6 +72,22 @@ lagsopt = infcr(zt, maxlag, minlag, crt, prt, xt);
 disp(' ')
 disp('Estimated orders in VARX using BIC:  ')
 disp(lagsopt)
+disp('press any key to continue')
+pause
+
+%identify a VARMAX model for the series
+maxorder = [];
+seas = 1;
+prt = 0;
+[lagsopt, ferror] = lratiopqr(zt, xt, seas, maxorder, minlag, prt);
+disp(' ')
+disp('Estimated orders in VARMAX model:  ')
+disp(lagsopt)
+disp('press any key to continue')
+pause
+
+disp(' ')
+disp('We estimate a VARMAX(2, 0, 1) model:  ')
 disp('press any key to continue')
 pause
 
@@ -145,10 +163,10 @@ pause
 close all
 
 
-%identify a VARMA(p,q,r) model for the series
-disp('identify a VARMAX(p,q,r) model')
+%identify a VARMAX(p,q,r) model for the series
+disp('identify a VARMAX(p,q,r) fixing the maximum ordermodel')
 pause
-maxlag = 11;
+maxlag = -3;     %we fix the maximum order
 minlag = 0;
 prt = 0;
 seas = 1;

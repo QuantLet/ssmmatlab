@@ -462,7 +462,7 @@ pause
 
 %add information about the Kronecker indices
 %estimate the Kronecker indices for the original series
-maxorder = 6;
+maxorder = [];  
 hr3 = 0;
 prt = 0;
 [order, kro, scm] = varmaxscmidn(y, x, seas, maxorder, hr3, prt);
@@ -473,7 +473,7 @@ disp('press any key to continue')
 pause
 %estimate the Kronecker indices for the differenced and seasonally
 %corrected series
-maxorder = 6;
+maxorder = [];  
 prt = 0;
 [order, kro, scm] = varmaxscmidn(ydf, x, seas, maxorder, hr3, prt);
 disp(' ')
@@ -485,14 +485,14 @@ pause
 
 disp(' ')
 disp('estimate model in echelon form for the differenced series.')
-disp('Kronecker Indices are [1 4].')
+disp('Kronecker Indices are [1 3].')
 disp('press any key to continue')
 pause
 
 %preliminary estimation
 %estimate VARMA model in echelon form for the 'differenced and seasonally
 %corrected series'
-kro = [1, 4];
+kro = [1, 3];
 hr3 = 0;
 finv2 = 1;
 mstainv = 1;
@@ -521,17 +521,17 @@ in.fid = 1;
 in.fmt = char('%12.4f');
 tit = 'Lambda';
 strt = 1;
-mprintar(Lambdak(:, :, 2:5), in, tit, strt);
+mprintar(Lambdak(:, :, 2:4), in, tit, strt);
 tit = 'Theta';
 strt = 1;
-mprintar(strv.thetasexct(:, :, 2:5), in, tit, strt);
+mprintar(strv.thetasexct(:, :, 2:4), in, tit, strt);
 disp('t-values of Phi and Theta matrices:')
 tit = 'tv-Phi';
 strt = 1;
-mprintar(strv.phitvexct(:, :, 2:5), in, tit, strt);
+mprintar(strv.phitvexct(:, :, 2:4), in, tit, strt);
 tit = 'tv-Theta';
 strt = 1;
-mprintar(strv.thetatvexct(:, :, 2:5), in, tit, strt);
+mprintar(strv.thetatvexct(:, :, 2:4), in, tit, strt);
 %reparameterize betap and alpha
 [nb, mb] = size(betafpk);
 alphak = alphak * betafpk(:, 1:nb);

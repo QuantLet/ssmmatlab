@@ -26,8 +26,8 @@ disp('estimate Kronecker indices for the series')
 disp('press any key to continue')
 pause
 %estimate the Kronecker indices for the original series
-prt = 0;
-maxorder = 2;
+prt = 1;
+maxorder = 2; 
 hr3 = 0;
 [order, kro, scm] = varmaxscmidn(y, x, seas, maxorder, hr3, prt);
 disp('estimated Kronecker Indices for the original series ')

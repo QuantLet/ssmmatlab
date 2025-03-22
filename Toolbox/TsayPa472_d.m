@@ -34,7 +34,7 @@ pause
 
 
 %estimate the Kronecker indices for the series
-maxorder = 6;
+maxorder = [];
 hr3 = 0;
 x = [];
 seas = 1;

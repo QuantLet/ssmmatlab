@@ -3,17 +3,22 @@ function [lagsopt, a, ferror] = lratiopppt(y, x, seas, maxlag, minlag, prt)
 %          models to determine optimal p, starting from p=minlag and
 %          proceeding up to p=maxlag. All models are estimated
 %          using the same sample size: nobs - maxlag.
+%          The innovations are computed as in the Hannan-Rissanen method.
+%          That is, using a VARX approximation with length given by a
+%          formula that depends on the sample size. 
 %---------------------------------------------------
 % USAGE:  [lagsopt,ferror] = lratiopppt(y,x,seas,maxlag,minlag,prt)
 % where:    y    = an (nobs x neqs) matrix of y-vectors
 %           x    = matrix of input variables (nobs x nx)
 %                 (NOTE: constant vector automatically included)
 %         seas   = seasonality
-%           maxlag = the maximum lag length. If empty on entry, it is
-%                    calculated by the program as the order of the VARX
-%                    approximation.
-%           minlag = the minimum lag length
-%           prt = flag for printing
+%         maxlag = the maximum lag length. If empty on entry, it is
+%                  calculated by the program as the order of the VARX
+%                  approximation. In this case, or if maxlag is > 0, this
+%                  maximum lag length it used to identify a VARMA(p,p,p) 
+%                  model.
+%         minlag = the minimum lag length
+%            prt = flag for printing
 %                    0 = no, 1 = yes
 %                    (default = 0)
 %---------------------------------------------------
@@ -50,7 +55,7 @@ if maxlag < minlag
     return
 end;
 
-[nobs, neqs] = size(y);
+[nobs, s] = size(y);
 if ~isempty(x)
     [mx, nx] = size(x);
     if (mx ~= nobs)
@@ -76,25 +81,79 @@ end
 pt = max(8, seas+minp);
 minlags = 0;
 maxlags = ceil(max(log(nobs)^aa, pt)); %VARX length is given by this formula
-if nx == 0
-    [lagsopt, initres] = lratiocr(y, maxlags, minlags, prt);
-    res = var_res(y, lagsopt);
-else
-    [lagsopt, initres] = lratiocrx(y, maxlags, minlags, prt, x);
-    res = varx_res(y, lagsopt, x);
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%compute VARX residuals using a VARX length given by a formula that depends 
+%on the sample size
+
+% compute initial residuals using VARXs with different lengths
+initres = zeros(maxlags, s);
+for i = minlags:maxlags - 1
+    if nx == 0
+        resid = var_res(y, i);
+        initres(i+1, :) = resid(1, :);
+    else
+        resid = varx_res(y, i, x);
+        initres(i+1, :) = resid(1, :);
+    end
 end
-a = [initres(1:lagsopt, :); res]; %residuals of the VARX approximation
-if prt == 1
-    fprintf(1, 'estimated order in VARX = %2d\n\n', lagsopt);
+% compute the rest of residuals using a VARX(maxlags)
+if nx == 0
+    [res] = var_res(y, maxlags);
+else
+    [res] = varx_res(y, maxlags, x);
 end
 
-%the following three lines added on 17-2-2011
-if isempty(maxlag)
+a = [initres(1:maxlags, :); res]; % use all possible VARX residuals
+
+%If maxlag is empty, we compute it as the VARX length chose by the bic
+%criterium
+if isempty(maxlag) 
+    if nx == 0
+        % lagsopt = lratiocr(y, maxlags, minlags, prt);
+        crt = 'bic';
+        lagsopt = infcr(y, maxlags, minlags, crt, prt);
+    else
+        % lagsopt = lratiocrx(y, maxlags, minlags, prt, x);
+        crt = 'bic';
+        lagsopt = infcr(y, maxlags, minlags, crt, prt, x);
+    end
+    if prt == 1
+        fprintf(1, 'estimated order in VARX = %2d\n\n', lagsopt);
+    end  
     maxlag = lagsopt;
 end
+%
+%%%%%%%%%%%%%%%%%%%%%
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %alternative to fixed VARX order to compute VARX residuals
+% if nx == 0
+%     % [lagsopt, initres] = lratiocr(y, maxlags, minlags, prt);
+%     crt = 'bic';
+%     [lagsopt, initres] = infcr(y, maxlags, minlags, crt, prt);
+%     res = var_res(y, lagsopt);
+% else
+%     % [lagsopt, initres] = lratiocrx(y, maxlags, minlags, prt, x);
+%     crt = 'bic';
+%     [lagsopt, initres] = infcr(y, maxlags, minlags, crt, prt, x);
+%     res = varx_res(y, lagsopt, x);
+% end
+% a = [initres(1:lagsopt, :); res]; %residuals of the VARX approximation
+% if prt == 1
+%    fprintf(1, 'estimated order in VARX = %2d\n\n', lagsopt);
+% end
+% 
+% if isempty(maxlag) || (maxlag > lagsopt)
+%     maxlag = lagsopt;
+% end
+% %
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 %identify a varmax(p,p,p)
-incr = 1;
+incr = 1; 
 lagsopt = lratiocrax(y, maxlag, minlag, incr, prt, a, x);
 if prt == 1
     fprintf(1, 'estimated order in VARMAX(p,p,p) = %2d\n\n', lagsopt);
