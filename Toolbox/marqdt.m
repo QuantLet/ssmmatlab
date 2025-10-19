@@ -84,6 +84,8 @@ end;
 nu = infoz.nu0;
 conv = 0;
 n = length(x);
+%this line added on 18th october 2025
+[nx, ~] = size(x);
 iter = 0;
 conf = 0;
 
@@ -119,8 +121,15 @@ while conv == 0
         end
     end
     delta = R \ (R' \ (-g));
-    xd = x + delta';
-    %  xd
+    %delta is an (n x 1) vector
+    %the next line modified on 18th october 2025
+    % xd = x + delta';
+    if (nx == n)
+      xd = x + delta;
+    else
+      xd = x + delta';
+    end
+     % xd
     if infoz.tr == 0
         fHandle = str2func(infoz.f);
         [ffd, xd] = fHandle(xd, varargin{:});
