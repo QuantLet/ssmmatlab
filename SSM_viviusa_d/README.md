@@ -9,7 +9,7 @@ Name of QuantLet: SSM_viviusa_d
 
 Published in: Linear Time Series With MATLAB and Octave
 
-Description: A multivariate structual model with common slopes for eight series of the housing
+Description: A multivariate structual model with common slopes for eight series of the housing market in the USA is estimated.
 
 Keywords: time-series, multivariate structural model, common slopes, state space model, unobserved components
 
