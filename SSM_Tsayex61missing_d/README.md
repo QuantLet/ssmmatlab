@@ -9,7 +9,7 @@ Name of QuantLet: SSM_Tsayex61missing_d
 
 Published in: Linear Time Series With MATLAB and Octave
 
-Description: A VARMA(0,3)(0,1) with missing observations is estimated for two series after differencing with
+Description: A VARMA(0,3)(0,1) with missing observations is estimated for two series after differencing with one regular and one seasonal difference. The data are taken from Example 6.1 in Tsay (2014).
 
 Keywords: time-series, multiplicative VARMA model, estimation, missing observations, exact maximum likelihood method
 
