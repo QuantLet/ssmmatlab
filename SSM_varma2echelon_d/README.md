@@ -9,7 +9,7 @@ Name of QuantLet: SSM_varma2echelon_d
 
 Published in: Linear Time Series With MATLAB and Octave
 
-Description: The echelon form of a VARMA, VARMAX or time invariant state space model is
+Description: The echelon form of a VARMA, VARMAX or time invariant state space model is computed by polynomial methods.
 
 Keywords: time-series, polynomial methods, echelon form, VARMA, VARMAX, time invariant state space model
 
