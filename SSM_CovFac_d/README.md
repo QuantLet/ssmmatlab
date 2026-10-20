@@ -9,7 +9,7 @@ Name of QuantLet: SSM_CovFac_d
 
 Published in: Linear Time Series With MATLAB and Octave
 
-Description: The autocovariances of a vector moving averrage process of order one are first computed and
+Description: The autocovariances of a vector moving averrage process of order one are first computed and then the spectral factorization of these covariances is performed using two methods.
 
 Keywords: time-series, spectral factorization, vector moving average, autocovariances, polynomial methods, state space methods
 
