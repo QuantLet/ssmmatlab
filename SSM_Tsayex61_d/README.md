@@ -9,7 +9,7 @@ Name of QuantLet: SSM_Tsayex61_d
 
 Published in: Linear Time Series With MATLAB and Octave
 
-Description: A VARMA(0,3)(0,1) is estimated for two series after differencing with one regular and one seasonal difference.
+Description: A VARMA(0,3)(0,1) is estimated for two series after differencing with one regular and one seasonal difference. This is Example 6.1 in Tsay (2014).
 
 Keywords: time-series, multiplicative VARMA model, estimation, differentiation, stepwise elimination
 
