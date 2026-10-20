@@ -9,7 +9,7 @@ Name of QuantLet: SSM_spec2_d
 
 Published in: Linear Time Series With MATLAB and Octave
 
-Description: The smoothed periodogram of the cycle of the quarterly German IPI series is computed
+Description: The smoothed periodogram of the cycle of the quarterly German IPI series is computed and displayed.
 
 Keywords: time-series, smoothed periodogram, cycle, ARIMA model, canonical decomposition
 
