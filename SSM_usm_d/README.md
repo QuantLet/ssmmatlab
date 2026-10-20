@@ -9,7 +9,7 @@ Name of QuantLet: SSM_usm_d
 
 Published in: Linear Time Series With MATLAB and Octave
 
-Description: A structural model for the airline series of Box and Jenkins (1976) is estimated and
+Description: A structural model for the airline series of Box and Jenkins (1976) is estimated and Kalman smoothing is used to estimate the components.
 
 Keywords: time-series, structural model, state space model, unobserved components, state space model
 
