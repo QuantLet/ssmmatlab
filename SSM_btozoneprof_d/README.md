@@ -9,7 +9,7 @@ Name of QuantLet: SSM_btozoneprof_d
 
 Published in: Linear Time Series With MATLAB and Octave
 
-Description: An ARIMA model for the ozone series of Box and Tiao (1975) is identified using the BIC and AIC criteria,
+Description: An ARIMA model for the ozone series of Box and Tiao (1975) is identified using the BIC and AIC criteria, both computed by means of the profile likelihood.
 
 Keywords: time-series, ARIMA model, identification, profile likelihood, AIC, BIC, information criteria
 
