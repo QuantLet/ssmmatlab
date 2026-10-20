@@ -9,7 +9,7 @@ Name of QuantLet: SSM_mulcycus2wcv_d
 
 Published in: Linear Time Series With MATLAB and Octave
 
-Description: A multivariate structural model with a common slope is estimated and a smooth cycle is
+Description: A multivariate structural model with a common slope is estimated and a smooth cycle is obtained by means of a band pass filter.
 
 Keywords: time-series, multivariate structural model, business cycle, band-pass filter, common slope
 
