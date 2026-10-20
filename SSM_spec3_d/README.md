@@ -9,7 +9,7 @@ Name of QuantLet: SSM_spec3_d
 
 Published in: Linear Time Series With MATLAB and Octave
 
-Description: A spectral analysis of three series is performed to see if two of them lead or lag
+Description: A spectral analysis of three series is performed to see if two of them lead or lag the third one.
 
 Keywords: time-series, smoothed periodogram, cycle, spectral analysis, autocorrelations
 
